@@ -1,46 +1,75 @@
 import 'package:flutter/material.dart';
 import 'package:harry_potter/models/character.dart';
 
-class CharacterDetail extends StatelessWidget {
+import '../widgets/inherited_characters.dart';
+
+class CharacterDetail extends StatefulWidget {
   const CharacterDetail(this.character, {Key? key}) : super(key: key);
   final Character character;
 
   @override
+  State<CharacterDetail> createState() => _CharacterDetailState();
+}
+
+class _CharacterDetailState extends State<CharacterDetail> {
+  int reviews = 0;
+  int totalStars = 0;
+
+  @override
   Widget build(BuildContext context) {
+    final InheritedCharacters data =
+        context.dependOnInheritedWidgetOfExactType<InheritedCharacters>()!;
+
     return Scaffold(
         appBar: AppBar(
-          title: Text(character.name),
+          title: Text(widget.character.name),
         ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Hero(
-                tag: "${character.id}",
+                tag: "${widget.character.id}",
                 child: Image.network(
-                  character.url,
+                  widget.character.url,
                   width: 300,
                 ),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(Icons.star),
-                      Icon(Icons.star),
-                      Icon(Icons.star),
-                      Icon(Icons.star_border),
-                      Icon(Icons.star_border),
-                    ],
-                  ),
-                  const Text("89 reviews"),
+                  Rating(value: (reviews == 0) ? 0 : (totalStars ~/ reviews)),
+                  Text("$reviews reviews"),
                 ],
               ),
               Text(
-                character.name,
+                widget.character.name,
                 style: const TextStyle(fontSize: 30),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Rating(
+                    value: 0,
+                    color: Colors.blue,
+                    onClick: (value) {
+                      setState(() {
+                        reviews++;
+                        totalStars += value + 1;
+                      });
+                    },
+                  ),
+                  InkWell(
+                    child: Icon(
+                      (data.favorites.contains(widget.character)) ? Icons.favorite : Icons.favorite_outline,
+                      color: Colors.blue,
+                    ),
+                    onTap: () {
+                      data.toggleFavorite(widget.character);
+                      setState(() {});
+                    },
+                  )
+                ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -49,21 +78,21 @@ class CharacterDetail extends StatelessWidget {
                     children: [
                       const Icon(Icons.fitness_center),
                       const Text("Fuerza"),
-                      Text("${character.strength}"),
+                      Text("${widget.character.strength}"),
                     ],
                   ),
                   Column(
                     children: [
                       const Icon(Icons.auto_fix_normal),
                       const Text("Màgia"),
-                      Text("${character.magic}")
+                      Text("${widget.character.magic}")
                     ],
                   ),
                   Column(
                     children: [
                       const Icon(Icons.speed),
                       const Text("Velocidad"),
-                      Text("${character.speed}")
+                      Text("${widget.character.speed}")
                     ],
                   )
                 ],
@@ -71,5 +100,36 @@ class CharacterDetail extends StatelessWidget {
             ],
           ),
         ));
+  }
+}
+
+class Rating extends StatelessWidget {
+  final int value;
+  final Color color;
+  final Function(int)? onClick;
+
+  const Rating({
+    Key? key,
+    required this.value,
+    this.color = Colors.black,
+    this.onClick,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        for (int i = 0; i < 5; i++)
+          InkWell(
+              child: Icon(
+                value > i ? Icons.star : Icons.star_border,
+                color: color,
+              ),
+              onTap: () {
+                if (onClick != null) onClick!(i);
+              }),
+      ],
+    );
   }
 }
