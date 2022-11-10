@@ -4,8 +4,9 @@ import 'package:harry_potter/models/character.dart';
 import '../widgets/inherited_characters.dart';
 
 class CharacterDetail extends StatefulWidget {
-  const CharacterDetail(this.character, {Key? key}) : super(key: key);
+  const CharacterDetail(this.character, {Key? key, required this.showAppBar}) : super(key: key);
   final Character character;
+  final bool showAppBar;
 
   @override
   State<CharacterDetail> createState() => _CharacterDetailState();
@@ -21,83 +22,84 @@ class _CharacterDetailState extends State<CharacterDetail> {
         context.dependOnInheritedWidgetOfExactType<InheritedCharacters>()!;
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.character.name),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Hero(
-                tag: "${widget.character.id}",
-                child: Image.network(
-                  widget.character.url,
-                  width: 300,
+      appBar: MediaQuery.of(context).orientation == Orientation.portrait ?
+        AppBar(title: Text(widget.character.name)) : null,
+        body: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Hero(
+                  tag: "${widget.character.id}",
+                  child: Image.network(
+                    widget.character.url,
+                    width: 300,
+                  ),
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Rating(value: (reviews == 0) ? 0 : (totalStars ~/ reviews)),
-                  Text("$reviews reviews"),
-                ],
-              ),
-              Text(
-                widget.character.name,
-                style: const TextStyle(fontSize: 30),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Rating(
-                    value: 0,
-                    color: Colors.blue,
-                    onClick: (value) {
-                      setState(() {
-                        reviews++;
-                        totalStars += value + 1;
-                      });
-                    },
-                  ),
-                  InkWell(
-                    child: Icon(
-                      (data.favorites.contains(widget.character)) ? Icons.favorite : Icons.favorite_outline,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Rating(value: (reviews == 0) ? 0 : (totalStars ~/ reviews)),
+                    Text("$reviews reviews"),
+                  ],
+                ),
+                Text(
+                  widget.character.name,
+                  style: const TextStyle(fontSize: 30),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Rating(
+                      value: 0,
                       color: Colors.blue,
+                      onClick: (value) {
+                        setState(() {
+                          reviews++;
+                          totalStars += value + 1;
+                        });
+                      },
                     ),
-                    onTap: () {
-                      data.toggleFavorite(widget.character);
-                      setState(() {});
-                    },
-                  )
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Column(
-                    children: [
-                      const Icon(Icons.fitness_center),
-                      const Text("Fuerza"),
-                      Text("${widget.character.strength}"),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      const Icon(Icons.auto_fix_normal),
-                      const Text("Màgia"),
-                      Text("${widget.character.magic}")
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      const Icon(Icons.speed),
-                      const Text("Velocidad"),
-                      Text("${widget.character.speed}")
-                    ],
-                  )
-                ],
-              )
-            ],
+                    InkWell(
+                      child: Icon(
+                        (data.favorites.contains(widget.character)) ? Icons.favorite : Icons.favorite_outline,
+                        color: Colors.blue,
+                      ),
+                      onTap: () {
+                        data.toggleFavorite(widget.character);
+                        setState(() {});
+                      },
+                    )
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Column(
+                      children: [
+                        const Icon(Icons.fitness_center),
+                        const Text("Fuerza"),
+                        Text("${widget.character.strength}"),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        const Icon(Icons.auto_fix_normal),
+                        const Text("Màgia"),
+                        Text("${widget.character.magic}")
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        const Icon(Icons.speed),
+                        const Text("Velocidad"),
+                        Text("${widget.character.speed}")
+                      ],
+                    )
+                  ],
+                )
+              ],
+            ),
           ),
         ));
   }

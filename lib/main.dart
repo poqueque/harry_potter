@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:harry_potter/screens/character_list.dart';
+import 'package:harry_potter/screens/adaptive_page.dart';
 import 'package:harry_potter/widgets/inherited_characters.dart';
 
 void main() {
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const CharacterList(),
+        home: const AdaptivePage(),
       ),
     );
   }

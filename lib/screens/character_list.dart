@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:harry_potter/screens/character_detail.dart';
+import 'package:harry_potter/models/character.dart';
 
 import '../widgets/inherited_characters.dart';
 
 class CharacterList extends StatefulWidget {
-  const CharacterList({Key? key}) : super(key: key);
+  const CharacterList({Key? key, required this.onTap}) : super(key: key);
+  final Function(Character) onTap;
 
   @override
   State<CharacterList> createState() => _CharacterListState();
@@ -17,7 +18,6 @@ class _CharacterListState extends State<CharacterList> {
         context.dependOnInheritedWidgetOfExactType<InheritedCharacters>()!;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Personatges")),
       body: ListView(
           children: data.characters
               .map((character) => ListTile(
@@ -29,14 +29,7 @@ class _CharacterListState extends State<CharacterList> {
                     trailing: (data.favorites.contains(character))
                         ? const Icon(Icons.favorite)
                         : const Icon(Icons.favorite_outline),
-                    onTap: () async {
-                      await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  CharacterDetail(character)));
-                      setState(() {});
-                    },
+                    onTap: () => widget.onTap(character),
                   ))
               .toList()),
     );
