@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:harry_potter/models/character.dart';
+import 'package:provider/provider.dart';
 
-import '../widgets/inherited_characters.dart';
+import '../models/character_data.dart';
+import '../services/database.dart';
 
 class CharacterDetail extends StatefulWidget {
-  const CharacterDetail(this.character, {Key? key, required this.showAppBar}) : super(key: key);
-  final Character character;
+  const CharacterDetail(this.id, {Key? key, required this.showAppBar})
+      : super(key: key);
+  final int id;
   final bool showAppBar;
 
   @override
@@ -13,95 +16,104 @@ class CharacterDetail extends StatefulWidget {
 }
 
 class _CharacterDetailState extends State<CharacterDetail> {
-  int reviews = 0;
-  int totalStars = 0;
-
   @override
   Widget build(BuildContext context) {
-    final InheritedCharacters data =
-        context.dependOnInheritedWidgetOfExactType<InheritedCharacters>()!;
-
-    return Scaffold(
-      appBar: MediaQuery.of(context).orientation == Orientation.portrait ?
-        AppBar(title: Text(widget.character.name)) : null,
-        body: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Hero(
-                  tag: "${widget.character.id}",
-                  child: Image.network(
-                    widget.character.url,
-                    width: 300,
-                  ),
-                ),
-                Row(
+    return Consumer<CharacterData>(
+      builder: (context, data, child) {
+        Character character = data.getCharacter(widget.id);
+        return Scaffold(
+            appBar: MediaQuery.of(context).orientation == Orientation.portrait
+                ? AppBar(title: Text(character.name))
+                : null,
+            body: SingleChildScrollView(
+              child: Center(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Rating(value: (reviews == 0) ? 0 : (totalStars ~/ reviews)),
-                    Text("$reviews reviews"),
-                  ],
-                ),
-                Text(
-                  widget.character.name,
-                  style: const TextStyle(fontSize: 30),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Rating(
-                      value: 0,
-                      color: Colors.blue,
-                      onClick: (value) {
-                        setState(() {
-                          reviews++;
-                          totalStars += value + 1;
-                        });
-                      },
-                    ),
-                    InkWell(
-                      child: Icon(
-                        (data.favorites.contains(widget.character)) ? Icons.favorite : Icons.favorite_outline,
-                        color: Colors.blue,
+                    Hero(
+                      tag: "${character.id}",
+                      child: Image.network(
+                        character.url,
+                        width: 300,
                       ),
-                      onTap: () {
-                        data.toggleFavorite(widget.character);
-                        setState(() {});
-                      },
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Rating(
+                            value: (character.reviews == 0)
+                                ? 0
+                                : (character.totalStars ~/
+                                    character.reviews)),
+                        Text("${character.reviews} reviews"),
+                      ],
+                    ),
+                    Text(
+                      character.name,
+                      style: const TextStyle(fontSize: 30),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Rating(
+                          value: 0,
+                          color: Colors.blue,
+                          onClick: (value) {
+                            setState(() {
+                              character.reviews++;
+                              character.totalStars += value + 1;
+                              Database.instance.saveCharacter(character);
+                            });
+                          },
+                        ),
+                        Consumer<CharacterData>(builder: (context, data, child) {
+                          return InkWell(
+                            child: Icon(
+                              (character.favorite)
+                                  ? Icons.favorite
+                                  : Icons.favorite_outline,
+                              color: Colors.blue,
+                            ),
+                            onTap: () {
+                              data.toggleFavorite(character);
+                              setState(() {});
+                            },
+                          );
+                        })
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Column(
+                          children: [
+                            const Icon(Icons.fitness_center),
+                            const Text("Fuerza"),
+                            Text("${character.strength}"),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            const Icon(Icons.auto_fix_normal),
+                            const Text("Màgia"),
+                            Text("${character.magic}")
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            const Icon(Icons.speed),
+                            const Text("Velocidad"),
+                            Text("${character.speed}")
+                          ],
+                        )
+                      ],
                     )
                   ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Column(
-                      children: [
-                        const Icon(Icons.fitness_center),
-                        const Text("Fuerza"),
-                        Text("${widget.character.strength}"),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        const Icon(Icons.auto_fix_normal),
-                        const Text("Màgia"),
-                        Text("${widget.character.magic}")
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        const Icon(Icons.speed),
-                        const Text("Velocidad"),
-                        Text("${widget.character.speed}")
-                      ],
-                    )
-                  ],
-                )
-              ],
-            ),
-          ),
-        ));
+              ),
+            ));
+      }
+    );
   }
 }
 

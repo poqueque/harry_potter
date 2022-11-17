@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:harry_potter/screens/adaptive_page.dart';
-import 'package:harry_potter/widgets/inherited_characters.dart';
+import 'package:harry_potter/models/character_data.dart';
+import 'package:harry_potter/screens/splash.dart';
+import 'package:provider/provider.dart';
 
-void main() {
+Future<void> main() async {
   runApp(const MyApp());
 }
 
@@ -11,13 +12,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InheritedCharacters(
+    return ChangeNotifierProvider(
+      create: (context) => CharacterData(),
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const AdaptivePage(),
+        home: const Splash(),
       ),
     );
   }
