@@ -1,0 +1,10 @@
+{
+  "initApp": "Inicializando la app...",
+  "initPrefs": "Preferencias inicializadas",
+  "initDB": "Base de datos inicializada",
+  "magic": "Magia",
+  "characters": "Personajes de {group}",
+  "strength": "Fuerza",
+  "speed": "Velocidad",
+  "nReviews": "{count,plural, =0{sin valoraciones}, =1{1 valoración}, other{{count} valoraciones}}"
+}

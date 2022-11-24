@@ -10,10 +10,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   isar: ^3.0.4
   isar_flutter_libs: ^3.0.4
   provider: ^6.0.4
   shared_preferences: ^2.0.15
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:
@@ -22,6 +25,16 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   isar_generator: ^3.0.4
   build_runner: ^2.3.2
+  flutter_launcher_icons: "^0.11.0"
 
 flutter:
   uses-material-design: true
+  generate: true
+
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/hp_logo_1024.png"
+  adaptive_icon_foreground: "assets/images/hp_logo_1024.png"
+  adaptive_icon_background: "#ffbd17"

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:harry_potter/models/character.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../models/character_data.dart';
 import '../services/database.dart';
@@ -45,7 +46,11 @@ class _CharacterDetailState extends State<CharacterDetail> {
                                 ? 0
                                 : (character.totalStars ~/
                                     character.reviews)),
-                        Text("${character.reviews} reviews"),
+                        Flexible(
+                          child: Text(AppLocalizations.of(context)!.nReviews(character.reviews),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                       ],
                     ),
                     Text(
@@ -88,21 +93,21 @@ class _CharacterDetailState extends State<CharacterDetail> {
                         Column(
                           children: [
                             const Icon(Icons.fitness_center),
-                            const Text("Fuerza"),
+                            Text(AppLocalizations.of(context)!.strength),
                             Text("${character.strength}"),
                           ],
                         ),
                         Column(
                           children: [
                             const Icon(Icons.auto_fix_normal),
-                            const Text("Màgia"),
+                            Text(AppLocalizations.of(context)!.magic),
                             Text("${character.magic}")
                           ],
                         ),
                         Column(
                           children: [
                             const Icon(Icons.speed),
-                            const Text("Velocidad"),
+                            Text(AppLocalizations.of(context)!.speed),
                             Text("${character.speed}")
                           ],
                         )

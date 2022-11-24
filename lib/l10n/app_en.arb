@@ -1,0 +1,27 @@
+{
+  "initApp": "Initializing app...",
+  "initPrefs": "Preferences initialised",
+  "initDB": "Database initialised",
+  "magic": "Magic",
+  "characters": "{group} characters",
+  "@characters": {
+    "placeholders": {
+      "group": {
+        "type": "String"
+      }
+    }
+  },
+  "strength": "Strength",
+  "speed": "Speed",
+  "@magic": {
+    "description": "Name of the Magic parameter for each character"
+  },
+  "nReviews": "{count,plural, =0{no review}, =1{1 review}, other{{count} reviews}}",
+  "@nReviews": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
+}

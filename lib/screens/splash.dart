@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:harry_potter/screens/adaptive_page.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../services/database.dart';
 import '../services/preferences.dart';
@@ -12,12 +13,18 @@ class Splash extends StatefulWidget {
 }
 
 class _SplashState extends State<Splash> {
-  String _status = "Inicialitzant l'app...";
+  String _status = "";
 
   @override
   void initState() {
     super.initState();
     workFlow();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _status = AppLocalizations.of(context)!.initApp;
   }
 
   @override
@@ -42,11 +49,13 @@ class _SplashState extends State<Splash> {
 
   void workFlow() async {
     await Preferences.init();
-    _status = "Preferences initialised";
+    if (!mounted) return;
+    _status = AppLocalizations.of(context)!.initPrefs;
     setState(() {});
 
     await Database.init();
-    _status = "Database initialised";
+    if (!mounted) return;
+    _status = AppLocalizations.of(context)!.initDB;
     setState(() {});
 
     if (!mounted) return;

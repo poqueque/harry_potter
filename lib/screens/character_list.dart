@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:harry_potter/models/character.dart';
 import 'package:provider/provider.dart';
 
@@ -15,26 +16,24 @@ class CharacterList extends StatefulWidget {
 class _CharacterListState extends State<CharacterList> {
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      body: Consumer<CharacterData>(
-        builder: (context, data, child) {
-          return ListView(
-              children: data.characters
-                  .map((character) => ListTile(
-                        leading: Hero(
-                            tag: "${character.id}",
-                            child: Image.network(character.url)),
-                        title: Text(character.name),
-                        subtitle: Text("Màgia: ${character.magic}"),
-                        trailing: (character.favorite)
-                            ? const Icon(Icons.favorite)
-                            : const Icon(Icons.favorite_outline),
-                        onTap: () => widget.onTap(character),
-                      ))
-                  .toList());
-        }
-      ),
+      body: Consumer<CharacterData>(builder: (context, data, child) {
+        return ListView(
+            children: data.characters
+                .map((character) => ListTile(
+                      leading: Hero(
+                          tag: "${character.id}",
+                          child: Image.network(character.url)),
+                      title: Text(character.name),
+                      subtitle: Text(
+                          "${AppLocalizations.of(context)!.magic}: ${character.magic}"),
+                      trailing: (character.favorite)
+                          ? const Icon(Icons.favorite)
+                          : const Icon(Icons.favorite_outline),
+                      onTap: () => widget.onTap(character),
+                    ))
+                .toList());
+      }),
     );
   }
 }

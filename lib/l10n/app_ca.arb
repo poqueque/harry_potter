@@ -1,0 +1,10 @@
+{
+  "initApp": "Inicialitzant l'app...",
+  "initPrefs": "Preferències inicialitzades",
+  "initDB": "Base de dades inicialitzada",
+  "magic": "Màgia",
+  "characters": "Personatges de {group}",
+  "strength": "Força",
+  "speed": "Velocitat",
+  "nReviews": "{count,plural, =0{cap valoració}, =1{1 valoració}, other{{count} valoracions dels usuaris més espabilats del món mundial}}"
+}
