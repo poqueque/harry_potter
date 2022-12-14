@@ -21,11 +21,12 @@ class _AdaptivePageState extends State<AdaptivePage> {
         title: Text(AppLocalizations.of(context)!.characters("Hogwarts")),
         actions: [
           InkWell(
-            onTap: () {
-              Navigator.push(
+            onTap: () async {
+              await Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => const SettingsPage()));
+              setState(() {});
             },
             child: const Padding(
               padding: EdgeInsets.all(8.0),

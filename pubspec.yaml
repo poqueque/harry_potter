@@ -31,6 +31,8 @@ flutter:
   uses-material-design: true
   generate: true
 
+  assets:
+    - assets/images/
 
 flutter_icons:
   android: "launcher_icon"
@@ -38,3 +40,4 @@ flutter_icons:
   image_path: "assets/images/hp_logo_1024.png"
   adaptive_icon_foreground: "assets/images/hp_logo_1024.png"
   adaptive_icon_background: "#ffbd17"
+
