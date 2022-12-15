@@ -19,23 +19,30 @@ class _CharacterListState extends State<CharacterList> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Consumer<CharacterData>(builder: (context, data, child) {
-        return ListView(
-            children: data.characters
-                .map((character) => ListTile(
-                      leading: Hero(
-                          tag: "${character.id}",
-                          child: Image.network(character.url)),
-                      title: Text(character.name),
-                      subtitle: (Preferences.instance.showSubtitles)
-                          ? Text(
-                              "${AppLocalizations.of(context)!.magic}: ${character.magic}")
-                          : null,
-                      trailing: (character.favorite)
-                          ? const Icon(Icons.favorite)
-                          : const Icon(Icons.favorite_outline),
-                      onTap: () => widget.onTap(character),
-                    ))
-                .toList());
+        return ListView.separated(
+          itemCount: data.characters.length,
+          separatorBuilder: (context, index) {
+            return const Divider(
+              thickness: 1,
+            );
+          },
+          itemBuilder: (context, index) {
+            var character = data.characters[index];
+            return ListTile(
+              leading: Hero(
+                  tag: "${character.id}", child: Image.network(character.url)),
+              title: Text(character.name),
+              subtitle: (Preferences.instance.showSubtitles)
+                  ? Text(
+                      "${AppLocalizations.of(context)!.magic}: ${character.magic}")
+                  : null,
+              trailing: (character.favorite)
+                  ? const Icon(Icons.favorite)
+                  : const Icon(Icons.favorite_outline),
+              onTap: () => widget.onTap(character),
+            );
+          },
+        );
       }),
     );
   }

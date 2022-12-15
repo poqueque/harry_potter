@@ -10,7 +10,6 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-
   @override
   void initState() {
     super.initState();
@@ -24,7 +23,7 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
         body: ListView(
           children: [
-            SwitchListTile(
+            SwitchListTile.adaptive(
                 title: const Text("Show subtitles"),
                 value: Preferences.instance.showSubtitles,
                 onChanged: (value) {

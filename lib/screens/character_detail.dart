@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:harry_potter/models/character.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../models/character_data.dart';
 import '../services/database.dart';
@@ -19,105 +19,125 @@ class CharacterDetail extends StatefulWidget {
 class _CharacterDetailState extends State<CharacterDetail> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<CharacterData>(
-      builder: (context, data, child) {
-        Character character = data.getCharacter(widget.id);
-        return Scaffold(
-            appBar: MediaQuery.of(context).orientation == Orientation.portrait
-                ? AppBar(title: Text(character.name))
-                : null,
-            body: SingleChildScrollView(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Hero(
-                      tag: "${character.id}",
-                      child: Image.network(
-                        character.url,
-                        width: 300,
+    return Consumer<CharacterData>(builder: (context, data, child) {
+      Character character = data.getCharacter(widget.id);
+      return Scaffold(
+          appBar: MediaQuery.of(context).orientation == Orientation.portrait
+              ? AppBar(title: Text(character.name))
+              : null,
+          body: SingleChildScrollView(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Hero(
+                    tag: "${character.id}",
+                    child: Image.network(
+                      character.url,
+                      width: 300,
+                    ),
+                  ),
+                  RatingLine(character: character),
+                  Text(
+                    character.name,
+                    style: const TextStyle(fontSize: 30),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Rating(
+                        value: 0,
+                        color: Colors.blue,
+                        onClick: (value) {
+                          setState(() {
+                            character.reviews++;
+                            character.totalStars += value + 1;
+                            Database.instance.saveCharacter(character);
+                          });
+                        },
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Rating(
-                            value: (character.reviews == 0)
-                                ? 0
-                                : (character.totalStars ~/
-                                    character.reviews)),
-                        Flexible(
-                          child: Text(AppLocalizations.of(context)!.nReviews(character.reviews),
-                            overflow: TextOverflow.ellipsis,
+                      Consumer<CharacterData>(builder: (context, data, child) {
+                        return InkWell(
+                          child: Icon(
+                            (character.favorite)
+                                ? Icons.favorite
+                                : Icons.favorite_outline,
+                            color: Colors.blue,
                           ),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      character.name,
-                      style: const TextStyle(fontSize: 30),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Rating(
-                          value: 0,
-                          color: Colors.blue,
-                          onClick: (value) {
-                            setState(() {
-                              character.reviews++;
-                              character.totalStars += value + 1;
-                              Database.instance.saveCharacter(character);
-                            });
+                          onTap: () {
+                            data.toggleFavorite(character);
+                            setState(() {});
                           },
-                        ),
-                        Consumer<CharacterData>(builder: (context, data, child) {
-                          return InkWell(
-                            child: Icon(
-                              (character.favorite)
-                                  ? Icons.favorite
-                                  : Icons.favorite_outline,
-                              color: Colors.blue,
-                            ),
-                            onTap: () {
-                              data.toggleFavorite(character);
-                              setState(() {});
-                            },
-                          );
-                        })
-                      ],
+                        );
+                      })
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Column(
+                        children: [
+                          const Icon(Icons.fitness_center),
+                          Text(AppLocalizations.of(context)!.strength),
+                          Text("${character.strength}"),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          const Icon(Icons.auto_fix_normal),
+                          Text(AppLocalizations.of(context)!.magic),
+                          Text("${character.magic}")
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          const Icon(Icons.speed),
+                          Text(AppLocalizations.of(context)!.speed),
+                          Text("${character.speed}")
+                        ],
+                      )
+                    ],
+                  ),
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.search),
+                    onPressed: () {},
+                    label: const Text("Search"),
+                    style: ElevatedButton.styleFrom(
+                      shape: const StadiumBorder(),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Column(
-                          children: [
-                            const Icon(Icons.fitness_center),
-                            Text(AppLocalizations.of(context)!.strength),
-                            Text("${character.strength}"),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            const Icon(Icons.auto_fix_normal),
-                            Text(AppLocalizations.of(context)!.magic),
-                            Text("${character.magic}")
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            const Icon(Icons.speed),
-                            Text(AppLocalizations.of(context)!.speed),
-                            Text("${character.speed}")
-                          ],
-                        )
-                      ],
-                    )
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ));
-      }
+            ),
+          ));
+    });
+  }
+}
+
+class RatingLine extends StatelessWidget {
+  const RatingLine({
+    Key? key,
+    required this.character,
+  }) : super(key: key);
+
+  final Character character;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Rating(
+            value: (character.reviews == 0)
+                ? 0
+                : (character.totalStars ~/ character.reviews)),
+        Flexible(
+          child: Text(
+            AppLocalizations.of(context)!.nReviews(character.reviews),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
     );
   }
 }
